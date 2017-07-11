@@ -20,7 +20,7 @@ public class Main {
     public Thread thread = null;
 
     public Main() {
-        this.r = new Robot("http://here/index.php", 100);
+        this.r = new Robot("http://darkedenghostx.servegame.com/index.php", 100);
         this.thread = new Thread(r);
 
     }
