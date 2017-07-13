@@ -6,7 +6,7 @@
 package com.tronipm.bruteforceguessing.entities;
 
 /**
- * Change this class to suit your needs. (One more field, etc)
+ * TODO. Change this class to suit your needs. (One more field, etc)
  *
  * @author Mateus
  */
@@ -15,6 +15,11 @@ public class Credential {
     private String username = null;
     private String password = null;
 
+    /**
+     * Change this if you need to
+     * @param username
+     * @param password 
+     */
     public Credential(String username, String password) {
         this.username = username;
         this.password = password;
@@ -40,6 +45,10 @@ public class Credential {
         this.password = password;
     }
 
+    /**
+     * Change this if you need to
+     * @return 
+     */
     synchronized public String getData() {
         return username + "\t" + password;
     }

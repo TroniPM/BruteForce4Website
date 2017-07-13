@@ -21,23 +21,18 @@ public class Robot extends Thread {
     private WebSite webSite = null;
     private Reader reader = null;
     private Writer writer = null;
-    private int delayBetweenAttempts = 0;//milli
-    private static final String idInputLogin = "inp_login";
-    private static final String idInputPassword = "inp_senha";
-    private static final String unsuccessfulAttemptMessage = "Login ou senha incorretos";
-    private static final String successfulAttemptMessage = "Olá";
-    private static final String idInputButton = "btn_login";
+    private int delayBetweenAttempts = 0;
 
     private static final boolean needsToRedirectAfterAttemp = false;
 
     public ArrayList<Credential> arraySuccess = new ArrayList<>();
 
-    public Robot(String url, int delayBetweenAttempts) {
-        this.webSite = new WebSite(url);
-        this.delayBetweenAttempts = delayBetweenAttempts;
+    public Robot() {
+        this.webSite = new WebSite(Settings.url);
+        this.delayBetweenAttempts = Settings.delay;
 
-        reader = new Reader("./data/user.txt", "./data/pass.txt");
-        writer = new Writer("./data/success.txt");
+        reader = new Reader(Settings.file1, Settings.file2);
+        writer = new Writer(Settings.fileSuccess);
     }
 
     @Override
@@ -47,21 +42,38 @@ public class Robot extends Thread {
             webSite.open(true);
 
             System.out.println("Starting tests...");
-            int p2 = 1;
+            int attempts = 1;
+
+            int applyDelay = 0;
+
             for (int u = 0; u < reader.arrayUsers.size(); u++) {
                 String user = reader.arrayUsers.get(u);
 
                 for (int p = 0; p < reader.arrayPasswords.size(); p++) {
                     String pass = reader.arrayPasswords.get(p);
 
-                    System.out.println("Attempt: " + (p2++));
+                    Credential c = new Credential(user, pass);
 
-                    tryToLogin(user, pass);
+                    System.out.println("Attempt: " + (attempts++));
+
+                    tryToLogin(c);
 
                     if (needsToRedirectAfterAttemp) {
                         restart();
                     }
-                    //Thread.sleep(delayBetweenAttempts);
+
+                    if (Settings.quantityOfAttempsUntilApplyDelay > 0) {
+                        applyDelay++;
+                        if (applyDelay == Settings.quantityOfAttempsUntilApplyDelay) {
+                            applyDelay = 0;
+
+                            try {
+                                Thread.sleep(Settings.delay);
+                            } catch (InterruptedException ex) {
+                                Logger.getLogger(Robot.class.getName()).log(Level.SEVERE, null, ex);
+                            }
+                        }
+                    }
                 }
             }
             System.out.println("Finishing tests...");
@@ -70,19 +82,11 @@ public class Robot extends Thread {
         }
     }
 
-    /**
-     * TODO. Implement this method as you need (check by button, element, text,
-     * etc)
-     */
-    public synchronized void tryToLogin(String user, String pass) {
-        webSite.setInputByName(idInputLogin, user);
-        webSite.setInputByName(idInputPassword, pass);
-        webSite.clickByName(idInputButton);
+    public synchronized void tryToLogin(Credential c) {
 
-        boolean checkPageHasText = webSite.checkPageHasText(unsuccessfulAttemptMessage);
+        boolean flag = WantedBehaviour.checkNOT(webSite, c);
 
-        if (!checkPageHasText && user != null && pass != null && user != "" && pass != "") {
-            Credential c = new Credential(user, pass);
+        if (flag) {
             arraySuccess.add(c);
 
             writer.writeOnFile(c.getData() + "\n");

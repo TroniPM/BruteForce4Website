@@ -20,12 +20,12 @@ public class Main {
     public Thread thread = null;
 
     public Main() {
-        this.r = new Robot("http://darkedenghostx.servegame.com/index.php", 100);
+        this.r = new Robot();
         this.thread = new Thread(r);
 
     }
 
-    public void print() {
+    public void start() {
         if (thread != null) {
 
             thread.start();
@@ -41,16 +41,11 @@ public class Main {
     }
 
     public static void main(String[] args) throws Exception {
-        Logger.getLogger("com.gargoylesoftware.htmlunit.javascript").setLevel(Level.OFF);
-        Logger.getLogger("com.gargoylesoftware.htmlunit.WebClient").setLevel(Level.OFF);
+        if (Settings.suppressWarnings) {
+            Logger.getLogger("com.gargoylesoftware.htmlunit.javascript").setLevel(Level.OFF);
+            Logger.getLogger("com.gargoylesoftware.htmlunit.WebClient").setLevel(Level.OFF);
+        }
 
-        PrintStream oldErr = System.err;
-        PrintStream newErr = new PrintStream(new ByteArrayOutputStream());
-        //System.setErr(newErr);//suppress warnings
-
-        Main m = new Main();
-        m.print();
-
-        //System.setErr(oldErr);//suppress warnings
+        new Main().start();
     }
 }

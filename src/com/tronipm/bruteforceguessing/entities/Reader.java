@@ -33,7 +33,7 @@ public class Reader {
         System.out.println("Starting Reader: " + file1 + ", " + file2);
         arrayUsers = readFromFile(file1);
         arrayPasswords = readFromFile(file2);
-        System.out.println("Started Reader: " + file1 + ", " + file2);
+        System.out.println("Finishing Reader: " + file1 + ", " + file2);
     }
 
     synchronized private static List<String> readFromFile(String file) {
