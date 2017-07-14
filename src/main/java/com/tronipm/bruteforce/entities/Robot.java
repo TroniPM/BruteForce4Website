@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.tronipm.bruteforceguessing.entities;
+package com.tronipm.bruteforce.entities;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
